@@ -28,7 +28,7 @@ import simpype.simpype
 import socket
 
 def probe(port):
-	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	res = sock.connect_ex(('127.0.0.1', port))
 	if res != 0:
 		return port
