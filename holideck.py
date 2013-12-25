@@ -25,6 +25,17 @@ if v[0] != 2 or v[1] < 6:
 from multiprocessing import Process, Queue
 import iotas.iotas 
 import simpype.simpype
+import socket
+
+def probe(port):
+	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+	res = sock.connect_ex(('127.0.0.1', port))
+	if res != 0:
+		return port
+	else:
+		sock.close()
+		print >> sys.stderr, "Dodging conflict on TCP port %d." % port
+		return probe(port + 1)
 
 if __name__ == '__main__':
 
@@ -37,6 +48,9 @@ if __name__ == '__main__':
 	except:
 		spp_port = 8888		# If any error use default values
 		iop_port = 8080
+
+	spp_port = probe(spp_port)
+	iop_port = probe(iop_port)
 
 	# Create a Queue instance so the processes can share the datas
 	q = Queue()
